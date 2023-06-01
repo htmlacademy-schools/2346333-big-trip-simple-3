@@ -1,4 +1,3 @@
-import {createElement} from '../render.js';
 import { humanizePointDate, humanizePointTime, humanizePointDateNumber, getPointDateRFC } from '../util.js';
 import AbstractView from '../framework/view/abstract-view.js';
 

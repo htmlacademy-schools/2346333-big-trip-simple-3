@@ -29,3 +29,16 @@ export const DESCRIPTIONS = [
   'Nunc fermentum tortor ac porta dapibus.',
   'In rutrum ac purus sit amet tempus.',
 ];
+
+export const SORT_VALUES = {
+  DAY: 'day',
+  EVENT: 'event',
+  TIME: 'time',
+  PRICE: 'price',
+  OFFERS: 'offers'
+};
+
+export const FILTER_TYPES = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future'
+};
