@@ -1,4 +1,3 @@
-import {createElement} from '../render.js';
 import { humanizePointTime } from '../util.js';
 import {TYPES} from '../const.js';
 import AbstractView from '../framework/view/abstract-view.js';

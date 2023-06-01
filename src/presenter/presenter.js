@@ -4,12 +4,12 @@ import TripEventsListView from '../view/trip-events-list-view.js';
 import SortView from '../view/sort-view.js';
 import EmptyView from '../view/empty-view.js';
 import {render} from '../render.js';
+import generateSort from '../fish/sort.js';
 
 export default class EventsPresenter {
   #container;
   #pointsModel;
   #tripList = new TripEventsListView();
-  #sortView = new SortView();
   #points = [];
 
   init = (container, pointsModel) => {
@@ -17,7 +17,7 @@ export default class EventsPresenter {
     this.#pointsModel = pointsModel;
     this.#points = [...this.#pointsModel.points];
 
-    render(this.#sortView, this.#container);
+    render(new SortView(generateSort()), this.#container);
     render(this.#tripList, this.#container);
 
     if(this.#points.length > 0) {

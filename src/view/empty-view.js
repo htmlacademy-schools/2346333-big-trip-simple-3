@@ -1,4 +1,3 @@
-import {createElement} from '../render.js';
 import AbstractView from '../framework/view/abstract-view.js';
 
 const createEmptyTemplate = () => (
@@ -9,7 +8,6 @@ const createEmptyTemplate = () => (
 );
 
 export default class EmptyView extends AbstractView {
-
   get template() {
     return createEmptyTemplate();
   }
