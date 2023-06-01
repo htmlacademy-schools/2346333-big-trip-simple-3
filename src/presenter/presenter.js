@@ -65,9 +65,9 @@ export default class EventsPresenter {
       document.removeEventListener('keydown', onEscKeyDown);
     };
 
-    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click',openEditForm);
-    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', closeEditForm);
-    pointEditComponent.element.querySelector('form').addEventListener('submit', handleSubmitEvent);
+    pointComponent.setFormOpen(openEditForm);
+    pointEditComponent.setFormCLose(closeEditForm);
+    pointEditComponent.setFormSubmit(handleSubmitEvent);
 
     render(pointComponent, this.#tripList.element);
   };

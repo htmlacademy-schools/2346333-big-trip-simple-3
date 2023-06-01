@@ -1,6 +1,8 @@
 import {createElement} from '../render.js';
 import { humanizePointTime } from '../util.js';
 import {TYPES} from '../const.js';
+import AbstractView from '../framework/view/abstract-view.js';
+
 
 const createEventEditTemplate = (point) => {
   const {dateFrom, dateTo, type, offers, destination} = point;
@@ -99,11 +101,11 @@ const createEventEditTemplate = (point) => {
   );
 };
 
-export default class EventEditView {
-  #element = null;
+export default class EventEditView extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
   }
 
@@ -111,15 +113,23 @@ export default class EventEditView {
     return createEventEditTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setFormCLose = (callback) => {
+    this._callback.formClose = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formCloseHandler);
+  };
 
-    return this.#element;
-  }
+  #formCloseHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formClose();
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  setFormSubmit = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('form').addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
 }

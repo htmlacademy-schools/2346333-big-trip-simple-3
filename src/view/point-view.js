@@ -1,5 +1,7 @@
 import {createElement} from '../render.js';
 import { humanizePointDate, humanizePointTime, humanizePointDateNumber, getPointDateRFC } from '../util.js';
+import AbstractView from '../framework/view/abstract-view.js';
+
 
 const createPointViewTemplate = (point) => {
   const {dateFrom, dateTo, basePrice, type, destination} = point;
@@ -43,11 +45,11 @@ const createPointViewTemplate = (point) => {
   );
 };
 
-export default class PointView {
-  #element = null;
+export default class PointView extends AbstractView {
   #point = null;
 
   constructor(point) {
+    super();
     this.#point = point;
   }
 
@@ -55,15 +57,13 @@ export default class PointView {
     return createPointViewTemplate(this.#point);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setFormOpen = (callback) => {
+    this._callback.formOpen = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#formOpenHandler);
+  };
 
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
-  }
+  #formOpenHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formOpen();
+  };
 }
