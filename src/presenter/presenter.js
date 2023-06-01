@@ -5,20 +5,65 @@ import SortView from '../view/sort-view.js';
 import {render} from '../render.js';
 
 export default class EventsPresenter {
-  tripListComponent = new TripEventsListView();
-  sortViewComponent = new SortView();
+  #container;
+  #pointsModel;
+  #tripList = new TripEventsListView();
+  #sortView = new SortView();
+  #points = [];
 
-  init = (eventsContainer, pointsModel) => {
-    this.eventsContainer = eventsContainer;
-    this.pointsModel = pointsModel;
-    this.points = [...this.pointsModel.getPoints()];
+  init = (container, pointsModel) => {
+    this.#container = container instanceof Element ? container : document.querySelector(container);
+    this.#pointsModel = pointsModel;
+    this.#points = [...this.#pointsModel.getPoints()];
 
-    render(this.sortViewComponent, this.eventsContainer);
-    render(this.tripListComponent, this.eventsContainer);
-    render(new EventEditView(this.points[0]), this.tripListComponent.getElement());
+    render(this.#sortView, this.#container);
+    render(this.#tripList, this.#container);
 
-    for (let i = 0; i < this.points.length; i++) {
-      render(new EventView(this.points[i]), this.tripListComponent.getElement());
+    for (let i = 0; i < this.#points.length; i++) {
+      this.#renderPoint(this.#points[i]);
     }
+  };
+
+  #renderPoint = (point) => {
+    const pointComponent = new EventView(point);
+    const pointEditComponent = new EventEditView(point);
+
+    const replaceCardToForm = () => {
+      this.#tripList.element.replaceChild(pointEditComponent.element, pointComponent.element);
+    };
+
+    const replaceFormToCard = () => {
+      this.#tripList.element.replaceChild(pointComponent.element, pointEditComponent.element);
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape') {
+        evt.preventDefault();
+        replaceFormToCard();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    const openEditForm = () => {
+      replaceCardToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    };
+
+    const closeEditForm = () => {
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    };
+
+    const handleSubmitEvent = (evt) => {
+      evt.preventDefault();
+      replaceFormToCard();
+      document.removeEventListener('keydown', onEscKeyDown);
+    };
+
+    pointComponent.element.querySelector('.event__rollup-btn').addEventListener('click',openEditForm);
+    pointEditComponent.element.querySelector('.event__rollup-btn').addEventListener('click', closeEditForm);
+    pointEditComponent.element.querySelector('form').addEventListener('submit', handleSubmitEvent);
+
+    render(pointComponent, this.#tripList.element);
   };
 }

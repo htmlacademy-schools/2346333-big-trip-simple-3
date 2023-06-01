@@ -166,19 +166,21 @@ const createEventCreateTemplate = () => (
 );
 
 export default class EventCreateView {
-  getTemplate() {
+  #element = null;
+
+  get template() {
     return createEventCreateTemplate();
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
