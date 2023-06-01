@@ -8,7 +8,6 @@ const createEmptyTemplate = () => (
 );
 
 export default class EmptyView extends AbstractView {
-
   get template() {
     return createEmptyTemplate();
   }
