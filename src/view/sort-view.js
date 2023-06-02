@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
+
 const createSortTemplate = (values) => (
   `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
     ${values.length > 0 ? values.map((sort) => (

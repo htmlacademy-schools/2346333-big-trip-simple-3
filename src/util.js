@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {FILTER_TYPES} from '../const.js';
+import { FILTER_TYPES } from './const.js';
 
 export const generateRandomNumber = (min, max) => {
   if (min < 0 || min >= max) {

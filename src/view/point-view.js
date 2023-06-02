@@ -1,6 +1,5 @@
-import { humanizePointDate, humanizePointTime, humanizePointDateNumber, getPointDateRFC } from '../util.js';
 import AbstractView from '../framework/view/abstract-view.js';
-
+import { humanizePointDate, humanizePointTime, humanizePointDateNumber, getPointDateRFC } from '../util.js';
 
 const createPointViewTemplate = (point) => {
   const {dateFrom, dateTo, basePrice, type, destination} = point;
