@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
+
 const createEventViewTemplate = () => (
   `<li class="trip-events__item">
     <div class="event">

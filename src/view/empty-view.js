@@ -1,5 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
+
 const createEmptyTemplate = () => (
   `<section class="trip-events">
       <h2 class="visually-hidden">Trip events</h2>
