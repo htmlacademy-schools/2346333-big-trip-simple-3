@@ -3,10 +3,10 @@ import SortView from '../view/sort-view.js';
 import EmptyView from '../view/empty-view.js';
 import {render} from '../render.js';
 import { generateSort } from '../fish/sort.js';
-import PointPresenter from './route-point-presenter.js';
+import PointPresenter from './point-presenter.js';
 import { RenderPosition } from '../framework/render.js';
 
-export default class EventsPresenter {
+export default class NewPointPresenter {
   #container = null;
   #pointsModel = null;
 

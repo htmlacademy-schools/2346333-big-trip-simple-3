@@ -34,9 +34,9 @@ export default class PointPresenter {
     this.#pointComponent = new PointView(point);
     this.#pointEditComponent = new EventEditView(point);
 
-    this.#pointComponent.setEditClickHandler(this.#handleEditClick);
-    this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
-    this.#pointEditComponent.setEditClickHandler(this.#replaceFormToCard);
+    this.#pointComponent.setFormOpen(this.#handleEditClick);
+    this.#pointEditComponent.setFormSubmit(this.#handleFormSubmit);
+    this.#pointEditComponent.setFormClose(this.#replaceFormToCard);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this.#pointComponent, this.#сontainer);
