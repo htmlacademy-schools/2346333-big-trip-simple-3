@@ -1,7 +1,7 @@
+import {render, replace, remove} from '../framework/render.js';
+import EventView from '../view/point-view.js';
 import EventEditView from '../view/event-edit-view.js';
-import {render} from '../render.js';
-import PointView from '../view/point-view.js';
-import { replace, remove } from '../framework/render.js';
+import EventListItemView from '../view/list-item-view.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -9,20 +9,27 @@ const Mode = {
 };
 
 export default class PointPresenter {
-  #сontainer = null;
+  #pointListContainer = null;
   #changeData = null;
   #changeMode = null;
 
   #pointComponent = null;
   #pointEditComponent = null;
+  #pointsModel = null;
 
   #point = null;
   #mode = Mode.DEFAULT;
 
-  constructor(pointListContainer, changeData, changeMode) {
-    this.#сontainer = pointListContainer;
+  constructor(pointListContainer, pointsModel, changeData, changeMode) {
+    this.#pointListContainer = pointListContainer;
     this.#changeData = changeData;
     this.#changeMode = changeMode;
+    this.#pointsModel = pointsModel;
+    this.getOffersByType = this.#pointsModel.getOffersByType;
+    this.getDestination = this.#pointsModel.getDestination;
+    this.getAllDestinationNames = this.#pointsModel.getAllDestinationNames;
+    this.getOfferTypes = this.#pointsModel.getOfferTypes;
+    this.getAllOffersList = this.#pointsModel.getAllOffersList;
   }
 
   init = (point) => {
@@ -31,15 +38,18 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new PointView(point);
-    this.#pointEditComponent = new EventEditView(point);
+    this.#pointComponent = new EventView(point);
+    this.#pointEditComponent = new EventEditView(point, this.getOffersByType, this.getDestination, this.getAllDestinationNames, this.getOfferTypes, this.getAllOffersList);
 
-    this.#pointComponent.setFormOpen(this.#handleEditClick);
-    this.#pointEditComponent.setFormSubmit(this.#handleFormSubmit);
-    this.#pointEditComponent.setFormClose(this.#replaceFormToCard);
+    this.#pointComponent.setEditClickHandler(this.#handleEditClick);
+    this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
+    this.#pointEditComponent.setEditClickHandler(this.#replaceFormToCard);
+
+    const eventListItemElement = new EventListItemView();
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
-      render(this.#pointComponent, this.#сontainer);
+      render(this.#pointComponent, eventListItemElement.element);
+      render(eventListItemElement, this.#pointListContainer);
       return null;
     }
 
@@ -48,9 +58,7 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#pointComponent, prevPointEditComponent);
-      this.#mode = Mode.DEFAULT;
-      //replace(this.#pointEditComponent, prevPointEditComponent);
+      replace(this.#pointEditComponent, prevPointEditComponent);
     }
 
     remove(prevPointComponent);

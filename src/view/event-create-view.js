@@ -1,9 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-
 const createEventCreateTemplate = () => (
-  `<li class="trip-events__item">
-    <form class="event event--edit" action="#" method="post">
+  `<form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -162,13 +160,41 @@ const createEventCreateTemplate = () => (
           </div>
         </section>
       </section>
-    </form>
-  </li>`
+    </form>`
 );
 
 export default class EventCreateView extends AbstractView {
+  #newEventButton = null;
+
+  constructor(createPoint, removePoint) {
+    super();
+    this._callback.getRidOf = createPoint;
+    this._callback.createPoint = removePoint;
+  }
 
   get template() {
     return createEventCreateTemplate();
   }
+
+  setPointAddHandler = (button) => {
+    this.#newEventButton = button;
+    this.#newEventButton.addEventListener('click', this.#clickHandler);
+  };
+
+  #clickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.createPointAdd();
+    this.#newEventButton.disabled = true;
+  };
+
+  setDestroyPointAddHandler = () => {
+    this._callback.getRidOf();
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#removePointAddHandler);
+  };
+
+  #removePointAddHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.getRidOf();
+    this.#newEventButton.disabled = false;
+  };
 }
