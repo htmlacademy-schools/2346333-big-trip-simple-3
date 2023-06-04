@@ -1,7 +1,8 @@
 import {render, replace, remove} from '../framework/render.js';
-import EventView from '../view/point-view.js';
+import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
-import EventListItemView from '../view/list-item-view.js';
+import {UPDATE_TYPES, USER_ACTIONS} from '../const.js';
+import {isDatesEqual, isPriceEqual} from '../util/point.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -38,19 +39,17 @@ export default class PointPresenter {
     const prevPointComponent = this.#pointComponent;
     const prevPointEditComponent = this.#pointEditComponent;
 
-    this.#pointComponent = new EventView(point);
-    this.#pointEditComponent = new EventEditView(point, this.getOffersByType, this.getDestination, this.getAllDestinationNames, this.getOfferTypes, this.getAllOffersList);
+    this.#pointComponent = new EventView(this.#point);
+    this.#pointEditComponent = new EventEditView(this.#point, this.getOffersByType, this.getDestination, this.getAllDestinationNames, this.getOfferTypes, this.getAllOffersList);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointEditComponent.setFormSubmitHandler(this.#handleFormSubmit);
-    this.#pointEditComponent.setEditClickHandler(this.#replaceFormToCard);
-
-    const eventListItemElement = new EventListItemView();
+    this.#pointEditComponent.setEditClickHandler(this.#handleClick);
+    this.#pointEditComponent.setDeleteClickHandler(this.#handleDeleteClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
-      render(this.#pointComponent, eventListItemElement.element);
-      render(eventListItemElement, this.#pointListContainer);
-      return null;
+      render(this.#pointComponent, this.#pointListContainer);
+      return;
     }
 
     if (this.#mode === Mode.DEFAULT) {
@@ -59,6 +58,7 @@ export default class PointPresenter {
 
     if (this.#mode === Mode.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -75,6 +75,41 @@ export default class PointPresenter {
       this.#pointEditComponent.reset(this.#point);
       this.#replaceFormToCard();
     }
+  };
+
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#pointEditComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditComponent.shake(resetFormState);
   };
 
   #replaceCardToForm = () => {
@@ -103,7 +138,27 @@ export default class PointPresenter {
   };
 
   #handleFormSubmit = (point) => {
-    this.#changeData(point);
+    const isMinorUpdate =
+      !isDatesEqual(this.#point, point) ||
+      !isPriceEqual(this.#point, point);
+
+    this.#changeData(
+      USER_ACTIONS.UPDATE_POINT,
+      isMinorUpdate ? UPDATE_TYPES.MINOR : UPDATE_TYPES.PATCH,
+      point,
+    );
     this.#replaceFormToCard();
+  };
+
+  #handleClick = () => {
+    this.resetView();
+  };
+
+  #handleDeleteClick = (point) => {
+    this.#changeData(
+      USER_ACTIONS.DELETE_POINT,
+      UPDATE_TYPES.MINOR,
+      point,
+    );
   };
 }
