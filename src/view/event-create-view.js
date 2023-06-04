@@ -56,7 +56,7 @@ const createEventCreateTemplate = (point, offersByType, allDestinationNames, off
 
   const eventTypeTemplate = createPointTypeTemplate(allOffers, type);
 
-  const offersTemplate = allOffers.map((offer) => 
+  const offersTemplate = allOffers.map((offer) =>
     `<div class="event__offer-selector">
       <input
         class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${offer.id}"
