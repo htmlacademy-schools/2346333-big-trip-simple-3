@@ -1,14 +1,14 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {EmptyListTextValues} from '../const.js';
 
-const createTripListTemplate = (filterType) => {
+function createTripListTemplate(filterType) {
   const emptyListTextValue = EmptyListTextValues[filterType];
 
   return (
     `<p class="trip-events__msg">
       ${emptyListTextValue}
     </p>`);
-};
+}
 
 export default class ListEmptyView extends AbstractView {
   #filterType = null;

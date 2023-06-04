@@ -11,8 +11,8 @@ const Mode = {
 
 export default class PointPresenter {
   #pointListContainer = null;
-  #changeData = null;
-  #changeMode = null;
+  #handleDataChange = null;
+  #handleModeChange = null;
 
   #pointComponent = null;
   #pointEditComponent = null;
@@ -21,10 +21,10 @@ export default class PointPresenter {
   #point = null;
   #mode = Mode.DEFAULT;
 
-  constructor(pointListContainer, pointsModel, changeData, changeMode) {
+  constructor(pointListContainer, pointsModel, onDataChange, onModeChange) {
     this.#pointListContainer = pointListContainer;
-    this.#changeData = changeData;
-    this.#changeMode = changeMode;
+    this.#handleDataChange = onDataChange;
+    this.#handleModeChange = onModeChange;
     this.#pointsModel = pointsModel;
     this.getOffersByType = this.#pointsModel.getOffersByType;
     this.getDestination = this.#pointsModel.getDestination;
@@ -115,7 +115,7 @@ export default class PointPresenter {
   #replaceCardToForm = () => {
     replace(this.#pointEditComponent, this.#pointComponent);
     document.addEventListener('keydown', this.#escKeyDownHandler);
-    this.#changeMode();
+    this.#handleModeChange();
     this.#mode = Mode.EDITING;
   };
 
@@ -142,7 +142,7 @@ export default class PointPresenter {
       !isDatesEqual(this.#point, point) ||
       !isPriceEqual(this.#point, point);
 
-    this.#changeData(
+    this.#handleDataChange(
       USER_ACTIONS.UPDATE_POINT,
       isMinorUpdate ? UPDATE_TYPES.MINOR : UPDATE_TYPES.PATCH,
       point,
@@ -155,7 +155,7 @@ export default class PointPresenter {
   };
 
   #handleDeleteClick = (point) => {
-    this.#changeData(
+    this.#handleDataChange(
       USER_ACTIONS.DELETE_POINT,
       UPDATE_TYPES.MINOR,
       point,

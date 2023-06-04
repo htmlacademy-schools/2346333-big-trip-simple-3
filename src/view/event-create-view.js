@@ -56,7 +56,7 @@ const createEventCreateTemplate = (point, offersByType, allDestinationNames, off
 
   const eventTypeTemplate = createPointTypeTemplate(allOffers, type);
 
-  const offersTemplate = allOffers.map((offer) =>
+  const offersTemplate = allOffers.map((offer) => 
     `<div class="event__offer-selector">
       <input
         class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${offer.id}"
@@ -83,17 +83,17 @@ const createEventCreateTemplate = (point, offersByType, allDestinationNames, off
     </section>`
   );
 
-  const createDestinationListTemplate = (selectedCity) =>
+  const createDestinationListTemplate = (selectedCity) => (
     `<label class="event__label  event__type-output" for="event-destination-2">
     ${type}
     </label>
     <input class="event__input  event__input--destination" id="event-destination-2" type="text" name="event-destination" value="${selectedCity}" list="destination-list-2" required ${isDisabled ? 'disabled' : ''}>
     <datalist id="destination-list-2">
       ${allDestinationNames.map((destinationName) => `<option value="${destinationName.name}" id="${destinationName.id}" ${selectedCity === destinationName.name ? 'selected' : ''}></option>`).join('')}
-    </datalist>`;
+    </datalist>`
+  );
 
   const destinationListTemplate = createDestinationListTemplate(name);
-
   const photoTemplate = pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('');
 
   const startDate = humanizePointEditDate(dateFrom);
