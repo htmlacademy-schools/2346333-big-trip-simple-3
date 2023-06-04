@@ -3,33 +3,29 @@ import {USER_ACTIONS, UPDATE_TYPES, DEFAULT_POINT} from '../const.js';
 import EventCreateView from '../view/event-create-view.js';
 
 export default class NewPointPresenter {
-  #destroyCallback = null;
-
   #pointListContainer = null;
+  #handleDataChange = null;
+  #handleDestroy = null;
   #pointFormComponent = null;
 
   #point = null;
   #pointsModel = null;
 
-  #changeData = null;
-
-  constructor(pointListContainer, pointsModel, changeData) {
+  constructor(pointListContainer, pointsModel, onDataChange) {
     this.#pointListContainer = pointListContainer;
-
     this.#pointsModel = pointsModel;
+    this.#handleDataChange = onDataChange;
+
     this.getOffersByType = this.#pointsModel.getOffersByType;
-    this.getDestination = this.#pointsModel.getDestination;
-    this.getAllDestinationNames = this.#pointsModel.getAllDestinationNames;
-
     this.getOfferTypes = this.#pointsModel.getOfferTypes;
-
     this.getAllOffersList = this.#pointsModel.getAllOffersList;
 
-    this.#changeData = changeData;
+    this.getDestination = this.#pointsModel.getDestination;
+    this.getAllDestinationNames = this.#pointsModel.getAllDestinationNames;
   }
 
   init = (callback) => {
-    this.#destroyCallback = callback;
+    this.#handleDestroy = callback;
 
     if (this.#pointFormComponent !== null) {
       return;
@@ -45,7 +41,7 @@ export default class NewPointPresenter {
     );
 
     this.#pointFormComponent.setFormSubmitHandler ((point) => {
-      this.#changeData(
+      this.#handleDataChange(
         USER_ACTIONS.ADD_POINT,
         UPDATE_TYPES.MINOR,
         point,
@@ -65,20 +61,12 @@ export default class NewPointPresenter {
       return;
     }
 
-    this.#destroyCallback?.();
+    this.#handleDestroy();
 
     remove(this.#pointFormComponent);
     this.#pointFormComponent = null;
 
     document.removeEventListener('keydown', this.#escKeyDownHandler);
-  };
-
-  #escKeyDownHandler = (evt) => {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this.#pointFormComponent.reset(this.#point);
-      this.destroy();
-    }
   };
 
   setSaving = () => {
@@ -100,4 +88,11 @@ export default class NewPointPresenter {
     this.#pointFormComponent.shake(resetFormState);
   };
 
+  #escKeyDownHandler = (evt) => {
+    if (evt.key === 'Escape' || evt.key === 'Esc') {
+      evt.preventDefault();
+      this.#pointFormComponent.reset(this.#point);
+      this.destroy();
+    }
+  };
 }

@@ -1,17 +1,33 @@
 import dayjs from 'dayjs';
 
-export const humanizePointDate = (date) => dayjs(date).format('D MMM');
+export function humanizePointDate(date) {
+  return dayjs(date).format('D MMM');
+}
 
-export const humanizePointEditDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
+export function humanizePointEditDate(date) {
+  return dayjs(date).format('DD/MM/YY HH:mm');
+}
 
-export const humanizePointRouteTime = (time) => dayjs(time).format('HH:mm');
+export function humanizePointRouteTime(time) {
+  return dayjs(time).format('HH:mm');
+}
 
-export const isDataSubmitDisabled = (dateTo, dateFrom) => dayjs(dateTo).diff(dayjs(dateFrom)) < 0;
+export function isDataSubmitDisabled(dateTo, dateFrom) {
+  return dayjs(dateTo).diff(dayjs(dateFrom)) < 0;
+}
 
-export const isDatesEqual = (pointA, pointB) => dayjs(pointA.dateFrom).isSame(pointB.dateFrom, 'D');
+export function isDatesEqual(dateA, dateB) {
+  return (dateA === null && dateB === null) || dayjs(dateA.dateFrom).isSame(dateB.dateFrom, 'D');
+}
 
-export const isPriceEqual = (pointA, pointB) => pointA.basePrice === pointB.basePrice;
+export function isPriceEqual(pointA, pointB) {
+  return pointA.basePrice === pointB.basePrice;
+}
 
-export const sortPointDay = (pointA, pointB) => dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+export function sortPointDay(pointA, pointB) {
+  return dayjs(pointA.dateFrom).diff(dayjs(pointB.dateFrom));
+}
 
-export const sortPointPrice = (pointA, pointB) => pointB.basePrice - pointA.basePrice;
+export function sortPointPrice(pointA, pointB) {
+  return pointB.basePrice - pointA.basePrice;
+}

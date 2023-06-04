@@ -16,15 +16,15 @@ export default class PointsModel extends Observable {
     return this.#points;
   }
 
-  get offers () {
+  get offers() {
     return this.#offers;
   }
 
-  get destinations () {
+  get destinations() {
     return this.#destinations;
   }
 
-  init = async () => {
+  async init() {
     try {
       const points = await this.#pointsApiService.points;
       this.#offers = await this.#pointsApiService.offers;
@@ -36,12 +36,13 @@ export default class PointsModel extends Observable {
       this.#destinations = [];
     }
     this._notify(UPDATE_TYPES.INIT);
-  };
+  }
 
-  updatePoint = async (updateType, update) => {
+  async updatePoint(updateType, update) {
     const index = this.#points.findIndex((point) => point.id === update.id);
+
     if (index === -1) {
-      throw new Error('Can\'t update unexisting task');
+      throw new Error('Can\'t update unexisting event');
     }
 
     try {
@@ -55,26 +56,26 @@ export default class PointsModel extends Observable {
 
       this._notify(updateType, updatedPoint);
     } catch(err) {
-      throw new Error('Can\'t update point');
+      throw new Error('Can\'t update event');
     }
-  };
+  }
 
-  addPoint = async (updateType, update) => {
+  async addPoint(updateType, update) {
     try {
       const response = await this.#pointsApiService.addPoint(update);
       const newPoint = this.#adaptToClient(response);
       this.#points = [newPoint, ...this.#points];
       this._notify(updateType, newPoint);
     } catch(err) {
-      throw new Error('Can\'t add point');
+      throw new Error('Can\'t add event');
     }
-  };
+  }
 
-  deletePoint = async(updateType, update) => {
+  async deletePoint(updateType, update) {
     const index = this.#points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
-      throw new Error('Can\'t delete unexisting point');
+      throw new Error('Can\'t delete unexisting event');
     }
 
     try {
@@ -85,9 +86,9 @@ export default class PointsModel extends Observable {
       ];
       this._notify(updateType);
     } catch(err) {
-      throw new Error('Can\'t delete point');
+      throw new Error('Can\'t delete event');
     }
-  };
+  }
 
   #adaptToClient = (point) => {
     const destination = this.#destinations.find((element) => element.id === point.destination);

@@ -20,27 +20,54 @@ export default class PagePresenter {
   #pointsModel = null;
   #filterModel = null;
 
-  #sortComponent = null;
   #tripListComponent = new TripEventsListView();
   #listEmptyComponent = new ListEmptyView();
   #loadingComponent = new LoadingView();
-
-  #isLoading = true;
-  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
+  #sortComponent = null;
 
   #pointPresenter = new Map();
   #newPointPresenter = null;
   #currentSortType = SORT_TYPES.DAY;
   #filterType = FILTER_TYPES.EVERYTHING;
+  #isLoading = true;
+  #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
   constructor(eventsContainer, pointsModel, filterModel) {
     this.#eventsContainer = eventsContainer;
     this.#pointsModel = pointsModel;
     this.#filterModel = filterModel;
+
     this.#newPointPresenter = new NewPointPresenter(this.#tripListComponent.element, this.#pointsModel, this.#handleViewAction);
+
     this.#pointsModel.addObserver(this.#handleModelEvent);
     this.#filterModel.addObserver(this.#handleModelEvent);
   }
+
+  get points() {
+    this.#filterType = this.#filterModel.filter;
+    const points = this.#pointsModel.points;
+    const filteredPoints = filter[this.#filterType](points);
+
+    switch (this.#currentSortType) {
+      case SORT_TYPES.DAY:
+        return filteredPoints.sort(sortPointDay);
+      case SORT_TYPES.PRICE:
+        return filteredPoints.sort(sortPointPrice);
+    }
+
+    return filteredPoints;
+  }
+
+  init = () => {
+    render(this.#tripListComponent, this.#eventsContainer);
+    this.#renderPointsList();
+  };
+
+  createPoint = (callback) => {
+    this.#currentSortType = SORT_TYPES.DEFAULT;
+    this.#filterModel.setFilter(UPDATE_TYPES.MAJOR, FILTER_TYPES.EVERYTHING);
+    this.#newPointPresenter.init(callback, this.#pointsModel.offers, this.#pointsModel.destinations);
+  };
 
   #renderLoading = () => {
     render(this.#loadingComponent, this.#tripListComponent.element, RenderPosition.AFTERBEGIN);
@@ -105,6 +132,16 @@ export default class PagePresenter {
     }
   };
 
+  #handleSortTypeChange = (sortType) => {
+    if (this.#currentSortType === sortType) {
+      return;
+    }
+
+    this.#currentSortType = sortType;
+    this.#clearPointsList();
+    this.#renderPointsList();
+  };
+
   #renderSort = () => {
     this.#sortComponent = new SortView(this.#currentSortType);
     this.#sortComponent.setSortTypeChangeHandler(this.#handleSortTypeChange);
@@ -117,42 +154,6 @@ export default class PagePresenter {
 
   #renderListEmpty = () => {
     render(this.#listEmptyComponent, this.#tripListComponent.element);
-  };
-
-  get points() {
-    this.#filterType = this.#filterModel.filter;
-    const points = this.#pointsModel.points;
-    const filteredPoints = filter[this.#filterType](points);
-
-    switch (this.#currentSortType) {
-      case SORT_TYPES.DAY:
-        return filteredPoints.sort(sortPointDay);
-      case SORT_TYPES.PRICE:
-        return filteredPoints.sort(sortPointPrice);
-    }
-
-    return filteredPoints;
-  }
-
-  init = () => {
-    render(this.#tripListComponent, this.#eventsContainer);
-    this.#renderPointsList();
-  };
-
-  createPoint = (callback) => {
-    this.#currentSortType = SORT_TYPES.DEFAULT;
-    this.#filterModel.setFilter(UPDATE_TYPES.MAJOR, FILTER_TYPES.EVERYTHING);
-    this.#newPointPresenter.init(callback, this.#pointsModel.offers, this.#pointsModel.destinations);
-  };
-
-  #handleSortTypeChange = (sortType) => {
-    if (this.#currentSortType === sortType) {
-      return;
-    }
-
-    this.#currentSortType = sortType;
-    this.#clearPointsList();
-    this.#renderPointsList();
   };
 
   #renderPointsList = () => {

@@ -7,12 +7,12 @@ import PointsApiService from './point-api.js';
 const AUTHORIZATION = 'Basic 7XpWcIl8EN4f';
 const URL = 'https://18.ecmascript.pages.academy/big-trip';
 
-const pointsModel = new PointsModel(new PointsApiService(URL, AUTHORIZATION));
-const filterModel = new FilterModel();
-
 const tripEventsElement = document.querySelector('.trip-events');
 const filtersElement = document.querySelector('.trip-controls__filters');
 const newEventButton = document.querySelector('.trip-main__event-add-btn');
+
+const pointsModel = new PointsModel(new PointsApiService(URL, AUTHORIZATION));
+const filterModel = new FilterModel();
 
 const filterPresenter = new FilterPresenter(filtersElement, pointsModel, filterModel);
 const pagePresenter = new PagePresenter(tripEventsElement, pointsModel, filterModel);
