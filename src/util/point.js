@@ -31,3 +31,7 @@ export function sortPointDay(pointA, pointB) {
 export function sortPointPrice(pointA, pointB) {
   return pointB.basePrice - pointA.basePrice;
 }
+
+export function getTime() {
+  return new Date().toISOString();
+}

@@ -1,13 +1,8 @@
 import {render, replace, remove} from '../framework/render.js';
 import EventView from '../view/event-view.js';
 import EventEditView from '../view/event-edit-view.js';
-import {UPDATE_TYPES, USER_ACTIONS} from '../const.js';
+import {UpdateType, UserActions, Mode} from '../const.js';
 import {isDatesEqual, isPriceEqual} from '../util/point.js';
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
-};
 
 export default class PointPresenter {
   #pointListContainer = null;
@@ -58,7 +53,6 @@ export default class PointPresenter {
 
     if (this.#mode === Mode.EDITING) {
       replace(this.#pointEditComponent, prevPointEditComponent);
-      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -143,11 +137,10 @@ export default class PointPresenter {
       !isPriceEqual(this.#point, point);
 
     this.#handleDataChange(
-      USER_ACTIONS.UPDATE_POINT,
-      isMinorUpdate ? UPDATE_TYPES.MINOR : UPDATE_TYPES.PATCH,
+      UserActions.UPDATE_POINT,
+      isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       point,
     );
-    this.#replaceFormToCard();
   };
 
   #handleClick = () => {
@@ -156,8 +149,8 @@ export default class PointPresenter {
 
   #handleDeleteClick = (point) => {
     this.#handleDataChange(
-      USER_ACTIONS.DELETE_POINT,
-      UPDATE_TYPES.MINOR,
+      UserActions.DELETE_POINT,
+      UpdateType.MINOR,
       point,
     );
   };
