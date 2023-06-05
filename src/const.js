@@ -1,7 +1,9 @@
+import { getTime } from './util/point.js';
+
 export const DEFAULT_POINT = {
-  basePrice: 700,
-  dateFrom: '2023-09-10T22:55:56.845Z',
-  dateTo: '2023-09-17T22:55:56.845Z',
+  basePrice: null,
+  dateFrom: getTime(),
+  dateTo: getTime(),
   destination: {
     name: '',
     description: '',
@@ -11,23 +13,23 @@ export const DEFAULT_POINT = {
   type: 'taxi',
 };
 
-export const FILTER_TYPES = {
+export const FilterType = {
   EVERYTHING: 'Everything',
   FUTURE: 'Future'
 };
 
-export const SORT_TYPES = {
+export const SortType = {
   DAY: 'day',
   PRICE: 'price'
 };
 
-export const USER_ACTIONS = {
+export const UserActions = {
   UPDATE_POINT: 'UPDATE_POINT',
   ADD_POINT: 'ADD_POINT',
   DELETE_POINT: 'DELETE_POINT',
 };
 
-export const UPDATE_TYPES = {
+export const UpdateType = {
   PATCH: 'PATCH',
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
@@ -35,6 +37,13 @@ export const UPDATE_TYPES = {
 };
 
 export const EmptyListTextValues = {
-  [FILTER_TYPES.EVERYTHING]: 'Click New Event to create your first event',
-  [FILTER_TYPES.FUTURE]: 'There are no future events now',
+  [FilterType.EVERYTHING]: 'Click New Event to create your first event',
+  [FilterType.FUTURE]: 'There are no future events now',
 };
+
+export const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
+
+export const ErrorMessage = 'Sorry. Something went wrong. Please try again later.';

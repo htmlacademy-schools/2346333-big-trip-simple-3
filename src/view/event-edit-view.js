@@ -13,7 +13,8 @@ const createEventEditTemplate = (point, offersByType, allDestinationNames, offer
     offers,
     isDisabled,
     isSaving,
-    isDeleting
+    isDeleting,
+    id
   } = point;
 
   const {
@@ -87,6 +88,7 @@ const createEventEditTemplate = (point, offersByType, allDestinationNames, offer
 
   const photoTemplate = pictures.map((picture) => `<img class="event__photo" src="${picture.src}" alt="${picture.description}">`).join('');
 
+  const price = basePrice?.toString() ?? '';
   const startDate = humanizePointEditDate(dateFrom);
   const endDate = humanizePointEditDate(dateTo);
 
@@ -132,11 +134,11 @@ const createEventEditTemplate = (point, offersByType, allDestinationNames, offer
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
+          <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <button class="event__save-btn  btn  btn--blue" type="submit" ${isDataSubmitDisabled(dateTo, dateFrom) || isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
-        <button class="event__reset-btn" type="reset">${isDeleting ? 'Deleting...' : 'Delete'}</button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${!id ? 'Cancel' : `${isDeleting ? 'Deleting...' : 'Delete'}`}</button>
         <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
           <span class="visually-hidden">Open event</span>
         </button>
